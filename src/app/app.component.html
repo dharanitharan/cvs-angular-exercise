@@ -1,0 +1,35 @@
+<div class="container">
+  <div class="row p-0 cursor-pointer">
+      <div class="col-9 py-2" (click)="sort('accountNumber')">Account <i [ngClass]="{'d-none': (config.accountNumber === ''),
+        'arrow down': (config.accountNumber === 'ascending'),
+        'arrow up': (config.accountNumber === 'descending')}"></i></div>
+      <div class="col-3 py-2 text-right text-nowrap" (click)="sort('accountBalance')">
+        <div><i [ngClass]="{'d-none': (config.accountBalance === ''),
+          'arrow down': (config.accountBalance === 'ascending'),
+          'arrow up': (config.accountBalance === 'descending')}"></i> Available Cash</div>
+        <div class="small text-grey">Today's Change</div>
+      </div>
+  </div>
+
+  <div class="row" *ngFor="let account of accounts | slice:0:limit;">
+      <div class="col-9 font-weight-bold text-blue">
+          <span>{{account.accountType}}</span>
+          <span> - </span>
+          <span>{{account.accountNumber}}</span>
+      </div>
+      <div class="col-3 text-right text-nowrap">
+        <div>{{account.accountBalance | currency:"$"}}</div>
+        <div [ngClass]="{'text-green': (account.accountBalance - account.previousBalance > 0),
+          'text-red': (account.accountBalance - account.previousBalance < 0), 
+          'text-grey': (account.accountBalance === account.previousBalance)}">
+          <span>{{calculatePercentageChange(account.accountBalance, account.previousBalance)}}</span>
+          <span> / </span>
+          <span>{{calculateCashChange(account.accountBalance, account.previousBalance) | currency:"$"}}</span>
+        </div>
+      </div>
+  </div>
+
+  <div class="row text-center" *ngIf="limit < accounts.length">
+    <div class="col text-blue cursor-pointer" (click)="loadMore()">Load more</div>
+  </div>
+</div>
